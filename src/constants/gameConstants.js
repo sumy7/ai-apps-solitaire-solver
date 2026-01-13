@@ -10,6 +10,17 @@ export const SUITS = {
 }
 
 /**
+ * Suit to foundation index mapping
+ * Ensures consistent mapping between suits and foundation piles
+ */
+export const SUIT_TO_INDEX = {
+  hearts: 0,
+  diamonds: 1,
+  clubs: 2,
+  spades: 3
+}
+
+/**
  * Card ranks in order
  */
 export const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']

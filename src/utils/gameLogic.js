@@ -1,4 +1,4 @@
-import { SUITS, RANK_VALUES } from '../constants/gameConstants'
+import { SUITS, RANK_VALUES, SUIT_TO_INDEX } from '../constants/gameConstants'
 
 /**
  * Check if a card can be placed on a foundation pile
@@ -57,7 +57,7 @@ export const findValidMoves = (gameState) => {
     const wasteCard = gameState.waste[gameState.waste.length - 1]
     if (wasteCard.known) {
       // Check foundation moves
-      const suitIndex = Object.keys(SUITS).indexOf(wasteCard.suit)
+      const suitIndex = SUIT_TO_INDEX[wasteCard.suit]
       const foundation = gameState.foundations[suitIndex]
       if (canPlaceOnFoundation(wasteCard, foundation)) {
         moves.push({
@@ -88,7 +88,7 @@ export const findValidMoves = (gameState) => {
       const topCard = column[column.length - 1]
       if (topCard.faceUp && topCard.known) {
         // Check foundation moves
-        const suitIndex = Object.keys(SUITS).indexOf(topCard.suit)
+        const suitIndex = SUIT_TO_INDEX[topCard.suit]
         const foundation = gameState.foundations[suitIndex]
         if (canPlaceOnFoundation(topCard, foundation)) {
           moves.push({
