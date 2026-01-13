@@ -1,13 +1,11 @@
 import { SUITS, RANK_VALUES, SUIT_TO_INDEX } from '../constants/gameConstants'
+import { Card, GameState } from '../types'
 
 /**
  * Check if a card can be placed on a foundation pile
- * @param {Object} card - The card to place
- * @param {Array} foundation - The foundation pile
- * @returns {boolean} True if the move is valid
  */
-export const canPlaceOnFoundation = (card, foundation) => {
-  if (!card.known) return false
+export const canPlaceOnFoundation = (card: Card, foundation: Card[]): boolean => {
+  if (!card.known || !card.rank || !card.suit) return false
   
   // Ace must be placed on empty foundation
   if (foundation.length === 0) {
@@ -15,7 +13,7 @@ export const canPlaceOnFoundation = (card, foundation) => {
   }
   
   const topCard = foundation[foundation.length - 1]
-  if (!topCard.known) return false
+  if (!topCard.known || !topCard.rank || !topCard.suit) return false
   
   // Must be same suit and next rank in sequence
   return card.suit === topCard.suit && 
@@ -24,12 +22,9 @@ export const canPlaceOnFoundation = (card, foundation) => {
 
 /**
  * Check if a card can be placed on a tableau column
- * @param {Object} card - The card to place
- * @param {Array} column - The tableau column
- * @returns {boolean} True if the move is valid
  */
-export const canPlaceOnTableau = (card, column) => {
-  if (!card.known) return false
+export const canPlaceOnTableau = (card: Card, column: Card[]): boolean => {
+  if (!card.known || !card.rank || !card.suit) return false
   
   // Only Kings can be placed on empty columns
   if (column.length === 0) {
@@ -37,25 +32,29 @@ export const canPlaceOnTableau = (card, column) => {
   }
   
   const topCard = column[column.length - 1]
-  if (!topCard.faceUp || !topCard.known) return false
+  if (!topCard.faceUp || !topCard.known || !topCard.rank || !topCard.suit) return false
   
   // Must alternate colors and be descending rank
   return SUITS[card.suit].color !== SUITS[topCard.suit].color &&
          RANK_VALUES[card.rank] === RANK_VALUES[topCard.rank] - 1
 }
 
+export interface Move {
+  from: string
+  to: string
+  card: Card
+}
+
 /**
  * Find all valid moves in the current game state
- * @param {Object} gameState - Current game state
- * @returns {Array} Array of possible moves
  */
-export const findValidMoves = (gameState) => {
-  const moves = []
+export const findValidMoves = (gameState: GameState): Move[] => {
+  const moves: Move[] = []
 
   // Check waste pile card moves
   if (gameState.waste.length > 0) {
     const wasteCard = gameState.waste[gameState.waste.length - 1]
-    if (wasteCard.known) {
+    if (wasteCard.known && wasteCard.suit) {
       // Check foundation moves
       const suitIndex = SUIT_TO_INDEX[wasteCard.suit]
       const foundation = gameState.foundations[suitIndex]
@@ -86,7 +85,7 @@ export const findValidMoves = (gameState) => {
     const column = gameState.tableau[col]
     if (column.length > 0) {
       const topCard = column[column.length - 1]
-      if (topCard.faceUp && topCard.known) {
+      if (topCard.faceUp && topCard.known && topCard.suit) {
         // Check foundation moves
         const suitIndex = SUIT_TO_INDEX[topCard.suit]
         const foundation = gameState.foundations[suitIndex]
@@ -120,11 +119,12 @@ export const findValidMoves = (gameState) => {
 
 /**
  * Initialize a new game state
- * @param {number} drawMode - Draw mode (1 or 3)
- * @returns {Object} Initial game state
  */
-export const initializeGame = (drawMode) => {
-  const gameState = {
+export const initializeGame = (drawMode: number): GameState => {
+  let cardCounter = 0
+  const nextCardId = () => `card-${cardCounter++}`
+
+  const gameState: GameState = {
     stock: [],
     waste: [],
     foundations: [[], [], [], []],
@@ -136,11 +136,14 @@ export const initializeGame = (drawMode) => {
   // Create tableau with face-down and one face-up card per column
   for (let col = 0; col < 7; col++) {
     for (let row = 0; row <= col; row++) {
+      const faceUp = row === col
       gameState.tableau[col].push({
-        faceUp: row === col,
+        id: nextCardId(),
+        faceUp,
         suit: null,
         rank: null,
-        known: false
+        known: false,
+        initialPosition: { pile: 'tableau', column: col, row, faceUp }
       })
     }
   }
@@ -148,10 +151,12 @@ export const initializeGame = (drawMode) => {
   // Create stock (remaining 24 cards)
   for (let i = 0; i < 24; i++) {
     gameState.stock.push({
+      id: nextCardId(),
       faceUp: false,
       suit: null,
       rank: null,
-      known: false
+      known: false,
+      initialPosition: { pile: 'stock', index: i, faceUp: false }
     })
   }
 
