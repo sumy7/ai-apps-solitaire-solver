@@ -25,12 +25,13 @@ const Card = ({ card, onClick, className = '', draggable = false, onDragStart, o
       className={`
         relative w-20 h-28 rounded-lg shadow-md transition-all duration-200
         ${showFace 
-          ? 'bg-white/90 border border-gray-300 backdrop-blur-sm'
+          ? 'bg-white border border-gray-300 hover:shadow-xl'
           : isFaceDownKnown
             ? 'bg-white/20 border border-white/30 backdrop-blur-md'
-            : 'bg-gradient-to-br from-felt-dark to-felt-light border-2 border-green-600 cursor-pointer hover:translate-y-[-5px] hover:shadow-lg'
+            : 'bg-gradient-to-br from-felt-dark to-felt-light border-2 border-green-600 cursor-pointer hover:translate-y-[-3px] hover:shadow-xl hover:border-green-400'
         }
         ${onClick ? 'cursor-pointer' : ''}
+        ${draggable ? 'cursor-move hover:scale-105' : ''}
         ${className}
       `}
       onClick={onClick}
@@ -41,19 +42,19 @@ const Card = ({ card, onClick, className = '', draggable = false, onDragStart, o
     >
       {!isKnown ? (
         <div className="flex items-center justify-center h-full">
-          <span className="text-5xl text-white/50 font-bold">?</span>
+          <span className="text-5xl text-white/50 font-bold select-none">?</span>
         </div>
       ) : (
         card.suit && card.rank && (
           <div
-            className={`flex flex-col justify-between p-2 h-full ${SUITS[card.suit].color === 'red' ? 'text-red-600' : 'text-black'} ${isFaceDownKnown ? 'opacity-60' : ''}`}
+            className={`flex flex-col justify-between p-2 h-full select-none ${SUITS[card.suit].color === 'red' ? 'text-red-600' : 'text-black'} ${isFaceDownKnown ? 'opacity-60' : ''}`}
           >
             <div className="flex flex-col">
-              <span className="text-lg font-bold">{card.rank}</span>
-              <span className="text-2xl">{SUITS[card.suit].symbol}</span>
+              <span className="text-lg font-bold leading-none">{card.rank}</span>
+              <span className="text-2xl leading-none mt-0.5">{SUITS[card.suit].symbol}</span>
             </div>
             <div className="flex items-center justify-center">
-              <span className="text-4xl">{SUITS[card.suit].symbol}</span>
+              <span className="text-4xl opacity-90">{SUITS[card.suit].symbol}</span>
             </div>
           </div>
         )

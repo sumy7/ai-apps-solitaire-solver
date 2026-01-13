@@ -268,8 +268,8 @@ function App() {
               isDragging={!!dragSource}
             />
 
-            <div className="p-4 bg-white/10 rounded-xl text-center text-white backdrop-blur-sm border border-white/5 shadow-lg">
-              {infoMessage}
+            <div className="p-4 bg-gradient-to-r from-white/10 to-white/5 rounded-xl text-center text-white backdrop-blur-sm border border-white/10 shadow-xl">
+              <p className="text-sm md:text-base font-medium">ℹ️ {infoMessage}</p>
             </div>
           </div>
 

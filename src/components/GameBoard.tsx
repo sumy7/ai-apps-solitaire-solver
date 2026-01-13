@@ -22,7 +22,7 @@ const GameBoard = ({ gameState, onStockClick, onCardLeftClick, onCardRightClick,
   const wasteToShow = gameState.waste.slice(-3)
 
   return (
-    <div className="bg-black/20 p-6 rounded-xl min-h-[600px]">
+    <div className="bg-black/20 p-6 rounded-xl min-h-[600px] backdrop-blur-sm border border-white/5 shadow-2xl">
       {/* Top area: Stock, Waste, and Foundations */}
       <div className="flex justify-between mb-10">
         {/* Stock and Waste */}
@@ -37,11 +37,11 @@ const GameBoard = ({ gameState, onStockClick, onCardLeftClick, onCardRightClick,
             ) : gameState.waste.length > 0 ? (
               <button
                 onClick={onStockClick}
-                className="absolute inset-0 flex items-center justify-center gap-2 rounded-lg text-xl font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 shadow-inner hover:bg-emerald-100 active:scale-95 transition-all"
+                className="absolute inset-0 flex items-center justify-center gap-2 rounded-lg text-xl font-bold text-emerald-600 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 shadow-lg hover:from-emerald-100 hover:to-emerald-200 active:scale-95 transition-all hover:border-emerald-400"
                 aria-label="回收废牌到库存 (Recycle waste to stock)"
               >
-                <span aria-hidden>♻️</span>
-                <span className="text-sm font-semibold text-emerald-700">回收</span>
+                <span aria-hidden className="text-2xl">♻️</span>
+                <span className="text-sm font-bold text-emerald-700">回收</span>
               </button>
             ) : null}
           </Pile>
@@ -49,8 +49,8 @@ const GameBoard = ({ gameState, onStockClick, onCardLeftClick, onCardRightClick,
             {wasteToShow.map((card, idx) => (
               <div
                 key={card.id}
-                className="absolute"
-                style={{ left: `${idx * 12}px`, top: `${idx * -3}px` }}
+                className="absolute transition-all duration-200"
+                style={{ left: `${idx * 12}px`, top: `${idx * -3}px`, zIndex: idx }}
               >
                 <Card
                   card={card}
