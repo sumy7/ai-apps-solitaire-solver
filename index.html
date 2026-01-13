@@ -640,7 +640,7 @@
         // Event listeners
         document.getElementById('newGame').addEventListener('click', initGame);
         
-        document.getElementById('drawMode').addEventListener('click', () => {
+        document.getElementById('drawMode').addEventListener('change', () => {
             gameState.drawMode = parseInt(document.getElementById('drawMode').value);
             updateInfo(`抽牌模式已设置为: ${gameState.drawMode} 张 | Draw mode set to: ${gameState.drawMode}`);
         });
