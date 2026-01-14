@@ -1,42 +1,36 @@
-import { ReactNode, type DragEventHandler } from 'react'
+import { ReactNode } from 'react'
+import { useDroppable } from '@dnd-kit/core'
 
 interface PileProps {
   children?: ReactNode
   label: string
   symbol?: string
-  allowDrop?: boolean
-  onDrop?: () => void
-  onDragEnter?: () => void
-  onDragLeave?: () => void
+  id: string
+  disabled?: boolean
 }
 
 /**
  * Pile component - Container for card piles (stock, waste, foundation)
+ * Provides drop zone with visual feedback
  */
-const Pile = ({ children, label, symbol, allowDrop = false, onDrop, onDragEnter, onDragLeave }: PileProps) => {
-  const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
-    if (!allowDrop) return
-    e.preventDefault()
-    e.dataTransfer.dropEffect = 'move'
-  }
-
-  const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
-    if (!allowDrop) return
-    e.preventDefault()
-    onDrop?.()
-  }
+const Pile = ({ children, label, symbol, id, disabled = false }: PileProps) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id,
+    disabled,
+  })
 
   return (
     <div className="flex flex-col items-center gap-1">
       <div
-        className="relative w-20 h-28 rounded-lg border-2 border-dashed border-white/30 bg-black/20"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onDragEnter={allowDrop ? onDragEnter : undefined}
-        onDragLeave={allowDrop ? onDragLeave : undefined}
+        ref={setNodeRef}
+        className={`relative w-20 h-28 rounded-lg border-2 border-dashed transition-all duration-200 ${
+          isOver 
+            ? 'border-emerald-400 bg-emerald-400/30 scale-110 shadow-2xl ring-4 ring-emerald-400/50' 
+            : 'border-white/30 bg-black/20'
+        }`}
       >
         {symbol && (
-          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-20">
+          <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-20 pointer-events-none">
             {symbol}
           </div>
         )}

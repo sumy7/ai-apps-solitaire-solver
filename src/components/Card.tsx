@@ -1,6 +1,8 @@
 import { SUITS } from '../constants/gameConstants'
 import { Card as CardType } from '../types'
-import type { DragEvent, MouseEvent } from 'react'
+import type { MouseEvent } from 'react'
+import { useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 
 interface CardProps {
   card: CardType
@@ -8,20 +10,39 @@ interface CardProps {
   onContextMenu?: (event: MouseEvent<HTMLDivElement>) => void
   className?: string
   draggable?: boolean
-  onDragStart?: (event: DragEvent<HTMLDivElement>) => void
-  onDragEnd?: () => void
+  dragData?: {
+    type: 'waste' | 'tableau'
+    cards: CardType[]
+    column?: number
+    startIndex?: number
+  }
 }
 
 /**
  * Card component - Displays a single playing card
  */
-const Card = ({ card, onClick, className = '', draggable = false, onDragStart, onDragEnd, onContextMenu }: CardProps) => {
+const Card = ({ card, onClick, className = '', draggable = false, dragData, onContextMenu }: CardProps) => {
   const isKnown = Boolean(card.known && card.suit && card.rank)
   const isFaceDownKnown = !card.faceUp && isKnown
   const showFace = card.faceUp && isKnown
 
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: card.id,
+    data: dragData,
+    disabled: !draggable,
+  })
+
+  const style = transform ? {
+    transform: CSS.Translate.toString(transform),
+    transition: 'transform 150ms cubic-bezier(0.25, 0.1, 0.25, 1)',
+  } : undefined
+
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      {...(draggable ? listeners : {})}
+      {...attributes}
       className={`
         relative w-20 h-28 rounded-lg shadow-md transition-all duration-200
         ${showFace 
@@ -32,13 +53,11 @@ const Card = ({ card, onClick, className = '', draggable = false, onDragStart, o
         }
         ${onClick ? 'cursor-pointer' : ''}
         ${draggable ? 'cursor-move hover:scale-105' : ''}
+        ${isDragging ? 'opacity-50' : ''}
         ${className}
       `}
       onClick={onClick}
       onContextMenu={onContextMenu ? (event) => { event.preventDefault(); onContextMenu(event) } : undefined}
-      draggable={draggable}
-      onDragStart={draggable ? onDragStart : undefined}
-      onDragEnd={draggable ? onDragEnd : undefined}
     >
       {!isKnown ? (
         <div className="flex items-center justify-center h-full">
