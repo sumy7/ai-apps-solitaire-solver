@@ -61,6 +61,27 @@ npm run build
 npm run preview
 ```
 
+### 运行测试 / Run Tests
+
+```bash
+npm test
+```
+
+### 运行测试（带界面）/ Run Tests with UI
+
+```bash
+npm run test:ui
+```
+
+### 生成测试覆盖率报告 / Generate Test Coverage Report
+
+```bash
+npm run test:coverage
+```
+
+生成的覆盖率报告可以在 `coverage/index.html` 中查看。
+The generated coverage report can be viewed at `coverage/index.html`.
+
 ## 使用方法 / Usage
 
 1. 点击"新游戏"开始 / Click "New Game" to start
@@ -81,4 +102,23 @@ npm run preview
 - ⚛️ React 18 - UI 框架
 - 🎨 TailwindCSS - CSS 框架
 - ⚡ Vite - 构建工具
+- 🧪 Vitest - 测试框架
+- 📊 测试覆盖率报告 - v8 覆盖率提供者
 - 📦 模块化架构 - 清晰的代码组织
+
+## 测试 / Testing
+
+项目使用 Vitest 作为测试框架，提供了完善的单元测试覆盖。
+This project uses Vitest as the testing framework with comprehensive unit test coverage.
+
+### 测试文件 / Test Files
+
+- `src/constants/gameConstants.test.ts` - 游戏常量测试
+- `src/utils/gameLogic.test.ts` - 游戏逻辑测试
+- `src/utils/gameStateUtils.test.ts` - 游戏状态工具测试
+
+### 测试统计 / Test Statistics
+
+- ✅ 63 个测试用例全部通过 / 63 test cases all passing
+- 📊 核心工具函数覆盖率 > 70%
+- 🎯 游戏常量覆盖率 100%
